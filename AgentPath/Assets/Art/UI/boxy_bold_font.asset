@@ -637,9 +637,9 @@ MonoBehaviour:
     sprite: {fileID: -1730822359, guid: ab2c0f41481160340b5dce252b7d0a74, type: 3}
   - m_Index: 16
     m_Metrics:
-      m_Width: 4
+      m_Width: 5
       m_Height: 8
-      m_HorizontalBearingX: -2
+      m_HorizontalBearingX: -4.5
       m_HorizontalBearingY: 4
       m_HorizontalAdvance: 4
     m_GlyphRect:
