@@ -1,0 +1,90 @@
+{
+  "APIResponse": {
+    "success": false,
+    "data": {},
+    "error": {
+      "code": "string_value",
+      "message": "string_value",
+      "details": "string_value"
+    },
+    "timestamp": "string_value"
+  },
+  "APIError": {
+    "code": "string_value",
+    "message": "string_value",
+    "details": "string_value"
+  },
+  "HealthResponse": {
+    "status": "string_value",
+    "serverVersion": "string_value",
+    "port": 0,
+    "uptime": "string_value"
+  },
+  "GameStatusResponse": {
+    "isPlaying": false,
+    "sceneName": "string_value",
+    "gameTime": 0.0,
+    "playerExists": false,
+    "worldAxisUp": "string_value",
+    "worldAxisForward": "string_value",
+    "worldAxisRight": "string_value"
+  },
+  "GameTaskResponse": {
+    "taskDescription": "string_value",
+    "targetPosition": {
+      "x": 0.0,
+      "y": 0.0,
+      "z": 0.0
+    },
+    "distanceToTarget": 0.0,
+    "isCompleted": false
+  },
+  "CommandResponse": {
+    "executed": false,
+    "message": "string_value"
+  },
+  "PlayerPositionResponse": {
+    "position": {
+      "x": 0.0,
+      "y": 0.0,
+      "z": 0.0
+    },
+    "faceDir": {
+      "x": 0.0,
+      "y": 0.0,
+      "z": 0.0
+    }
+  },
+  "WaypointsResponse": {
+    "waypoints": [
+      {
+        "id": 0,
+        "position": {
+          "x": 0.0,
+          "y": 0.0,
+          "z": 0.0
+        },
+        "connectedIds": [
+          0
+        ],
+        "distance": 0.0
+      }
+    ],
+    "totalCount": 0
+  },
+  "NearestWaypointResponse": {
+    "waypoint": {
+      "id": 0,
+      "position": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "connectedIds": [
+        0
+      ],
+      "distance": 0.0
+    },
+    "distance": 0.0
+  }
+}
