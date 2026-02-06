@@ -9,7 +9,7 @@ the data structure is something like in the json of this path
 
 (the relative path of  root folder is the folder of this task file)
 
-The game rule is simple ,you're controller a player in 2D topdown dungeon, the goal is to find exit to get into the next level.
+The game rule is simple ,you're controlling a player in 2D topdown dungeon, the goal is to find exit to get into the next level.
 you can get game status, player position and exit position.
 you can move up/down/left/right. there are walkable waypoints placed in scene, and you can find all waypoint information ,and get nearby waypoints of the player, you can get a nearest waypoint by a given position. for example you can get the closest waypoint to the exit, and know how to get to it by connection of other waypoints.
 if you take good use of all waypoint information you can get a path to the exit by a-star pathfinding algrithom easily. or you can try to feel the surrounding world by blindly walk around.
