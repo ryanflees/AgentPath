@@ -3,12 +3,8 @@ using UnityEngine;
 
 namespace CR.OpenClaw
 {
-    #region Base Response Models (核心 - 所有服务使用)
+    #region Base Response Models
 
-    /// <summary>
-    /// Standard API response wrapper
-    /// 标准API响应包装器 - 所有端点使用此格式
-    /// </summary>
     [Serializable, AgentRes]
     public class APIResponse
     {
@@ -40,10 +36,6 @@ namespace CR.OpenClaw
         }
     }
 
-    /// <summary>
-    /// API error structure
-    /// API错误结构
-    /// </summary>
     [Serializable, AgentRes]
     public class APIError
     {
@@ -54,12 +46,8 @@ namespace CR.OpenClaw
 
     #endregion
 
-    #region Common Data Types (通用数据类型 - 多个服务共享)
+    #region Common Data Types
 
-    /// <summary>
-    /// Vector3 data transfer object
-    /// Vector3数据传输对象 - 用于JSON序列化
-    /// </summary>
     [Serializable]
     public class Vector3Data
     {
@@ -82,11 +70,7 @@ namespace CR.OpenClaw
 
     #endregion
 
-    #region System Endpoints (系统端点 - 服务器自身状态)
-
-    /// <summary>
-    /// Health check response - 服务器健康检查
-    /// </summary>
+    #region System Endpoints 
     [Serializable, AgentRes]
     public class HealthResponse
     {
@@ -96,9 +80,6 @@ namespace CR.OpenClaw
         public string uptime;
     }
 
-    /// <summary>
-    /// Game status response - 游戏运行状态
-    /// </summary>
     [Serializable, AgentRes]
     public class GameStatusResponse
     {

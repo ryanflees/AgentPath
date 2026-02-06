@@ -393,8 +393,10 @@ namespace CR.OpenClaw
                 isPlaying = Application.isPlaying,
                 sceneName = UnityEngine.SceneManagement.SceneManager.GetActiveScene().name,
                 gameTime = Time.time,
-                //playerExists = FindObjectOfType<FPSPlayerController>() != null
-                playerExists = false,
+                playerExists = (GameplayManager.Instance != null && GameplayManager.Instance.m_PlayerController != null), 
+                worldAxisUp =  "y",
+                worldAxisForward = "z",
+                worldAxisRight = "x"
             };
 
             return ResponseBuilder.CreateSuccessResponse(status);
