@@ -90,6 +90,9 @@ namespace CR.OpenClaw
         public string worldAxisUp = "y";
         public string worldAxisForward = "z";
         public string worldAxisRight = "x";
+        
+        public int chapter1Progress;
+        public int chapter2Progress;
     }
 
     #endregion
