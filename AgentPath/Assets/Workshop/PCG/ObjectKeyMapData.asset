@@ -1,0 +1,27 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6999f4de0bffae546aa851bacf4314de, type: 3}
+  m_Name: ObjectKeyMapData
+  m_EditorClassIdentifier: 
+  m_Keys:
+  - m_Name: exit
+    m_Prefab: {fileID: 4529320385134409674, guid: 8b8094f25c822d24c99baab0f3a25789, type: 3}
+    m_ComponentType: DungeonExit
+  - m_Name: gold_key
+    m_Prefab: {fileID: 8254600820479724506, guid: 63f77d28e2a5b9a45b0b49941d771fee, type: 3}
+    m_ComponentType: KeyItem
+  - m_Name: locked_door
+    m_Prefab: {fileID: 3276677587794987366, guid: 9ad39cd9239352042a350cdff0407509, type: 3}
+    m_ComponentType: DoorItem
+  - m_Name: spawn
+    m_Prefab: {fileID: 4383217772109302334, guid: 9993f7f56151abd43a85a8fe95a8fd89, type: 3}
+    m_ComponentType: SpawnPoint

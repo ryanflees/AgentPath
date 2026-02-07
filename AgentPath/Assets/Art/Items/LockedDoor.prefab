@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 5578816141645153611}
   - component: {fileID: -3694764472045356961}
   - component: {fileID: -4646741804233485760}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: LockedDoor
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -150,4 +150,4 @@ MonoBehaviour:
   itemId: 
   itemType: 1
   isInteractable: 1
-  isLocked: 1
+  m_IsLocked: 1

@@ -22,10 +22,11 @@ namespace CR
 
         protected void Awake()
         {
-            if ((Object)Instance != (Object)null)
+            if ((Object)Instance != (Object)null && Instance != this)
             {
-                Debug.LogError("Multiple instances of singleton class: " + base.GetType().ToString() + "\n");
-                Debug.Break();
+                //Debug.LogError("Multiple instances of singleton class: " + base.GetType().ToString() + "\n");
+                Destroy(gameObject);
+                return;
             }
             Instance = (T)this;
             OnAwake();
