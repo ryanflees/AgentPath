@@ -72,11 +72,21 @@ namespace CR
             if (prefab != null)
             {
                 GameObject instance = Instantiate(prefab);
-                instance.name = $"Level_{m_PendingChapter:D2}_{m_PendingLevel:D4}";
+                instance.name = $"level_{m_PendingChapter:D2}_{m_PendingLevel:D4}";
+
+                if (GameplayManager.Instance)
+                {
+                    GameplayManager.Instance.OnLevePrefabLoaded(instance);
+                }
             }
             StartCoroutine(FadeDelay(0.3f));
         }
 
+        public void ReloadCurrent()
+        {
+            LoadLevel(m_PendingChapter, m_PendingLevel);
+        }
+        
         public void LoadNextLevel()
         {
             LevelDataConfig config = MetaGame.GetConfig<LevelDataConfig>();

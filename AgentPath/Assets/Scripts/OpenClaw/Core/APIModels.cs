@@ -93,6 +93,7 @@ namespace CR.OpenClaw
         
         public int chapter1Progress;
         public int chapter2Progress;
+        public string currentLevel;
     }
 
     #endregion

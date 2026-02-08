@@ -388,6 +388,14 @@ namespace CR.OpenClaw
 
         private string GetGameStatus()
         {
+            int progress1 = UserDataManager.GetProgress(1);
+            int progress2 = UserDataManager.GetProgress(2);
+            LevelComponent levelComponent = GameObject.FindObjectOfType<LevelComponent>();
+            string levelName = "unkown";
+            if (levelComponent != null)
+            {
+                levelName = levelComponent.gameObject.name;
+            }
             var status = new GameStatusResponse
             {
                 isPlaying = Application.isPlaying,
@@ -396,7 +404,10 @@ namespace CR.OpenClaw
                 playerExists = (GameplayManager.Instance != null && GameplayManager.Instance.m_PlayerController != null), 
                 worldAxisUp =  "y",
                 worldAxisForward = "z",
-                worldAxisRight = "x"
+                worldAxisRight = "x",
+                chapter1Progress =  progress1,
+                chapter2Progress =  progress2,
+                currentLevel = levelName
             };
 
             return ResponseBuilder.CreateSuccessResponse(status);
