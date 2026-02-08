@@ -11,6 +11,7 @@ Thanks to the original creators for their contributions to the game development 
 ## UI & Fonts
 * **Golden UI**: Created by Buch.
     * [Source](https://opengameart.org/content/golden-ui)
+    * [Auther](https://opengameart.org/users/buch)
     * License: CC-BY 3.0 / CC0
 * **Boxy Bold Font**: Created by Hyptosis.
     * [Source](https://opengameart.org/content/boxy-bold-font)

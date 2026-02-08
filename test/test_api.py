@@ -4,6 +4,7 @@ import os
 import platform
 import threading
 import msvcrt
+import json
 
 BASE_URL = "http://localhost:8091"
 
@@ -18,9 +19,9 @@ class OpenClawTerminal:
         try:
             url = f"{BASE_URL}{endpoint}"
             if method == "POST":
-                resp = self.session.post(url, json=body, timeout=0.5)
+                resp = self.session.post(url, json=body, timeout=0.8)
             else:
-                resp = self.session.get(url, timeout=0.5)
+                resp = self.session.get(url, timeout=0.8)
             if resp.status_code == 200:
                 return resp.json()
         except:
@@ -29,11 +30,11 @@ class OpenClawTerminal:
 
     def update_loop(self):
         while self.is_running:
-            # 聚合请求所有 Service
-            status = self.invoke("/api/status")
-            pos = self.invoke("/api/player/position")
-            task = self.invoke("/api/game/task") # 包含完成状态
-            nearby = self.invoke("/api/waypoints/nearby")
+            # Syncing with new endpoints and data structures
+            status = self.invoke("/api/status")           # Returns scene and progress
+            pos = self.invoke("/api/player/position")     # Returns player transform
+            task = self.invoke("/api/game/task")          # Returns keys, doors, and objectives
+            nearby = self.invoke("/api/waypoints/nearby") # Returns local navigation nodes
 
             with self.lock:
                 self.game_data['status'] = status
@@ -46,41 +47,51 @@ class OpenClawTerminal:
         os.system('cls' if platform.system() == 'Windows' else 'clear')
         
         with self.lock:
+            # --- MISSION STATUS ---
             task_resp = self.game_data.get('task')
             is_done = False
             if task_resp and task_resp.get("success"):
                 is_done = task_resp["data"].get("isCompleted", False)
 
-            # --- 顶部横幅 ---
             if is_done:
                 print("*" * 60)
-                print(" " * 18 + "!!! LEVEL COMPLETE !!!") # 对应 UILevelComplete 逻辑
+                print(" " * 18 + "!!! LEVEL COMPLETE !!!")
                 print("*" * 60)
             else:
                 print("=" * 60)
                 print(f"  OPENCLAW MISSION MONITOR - {time.strftime('%H:%M:%S')}")
                 print("=" * 60)
 
-            # --- 核心数据 ---
+            # --- SYSTEM & PROGRESS ---
             s_resp = self.game_data.get('status')
             if s_resp and s_resp.get("success"):
                 s = s_resp["data"]
-                print(f"[SYSTEM ]: Scene: {s['sceneName']} | Player: {'OK' if s['playerExists'] else 'LOST'}")
+                print(f"[LEVEL  ]: {s['currentLevel']} (Scene: {s['sceneName']})")
+                print(f"[PROGRESS]: Ch1: {s['chapter1Progress']} | Ch2: {s['chapter2Progress']}")
 
+            # --- PLAYER ---
             p_resp = self.game_data.get('pos')
             if p_resp and p_resp.get("success"):
                 p = p_resp["data"]["position"]
                 print(f"[PLAYER ]: X: {p['x']:>6.2f} | Y: {p['y']:>6.2f}")
 
+            # --- DYNAMIC OBJECTS ---
             if task_resp and task_resp.get("success"):
                 t = task_resp["data"]
-                tp = t.get("targetPosition")
                 print(f"[MISSION]: {t['taskDescription']}")
-                if tp:
-                    # 显示目标坐标 (X, Y)，符合 2D 习惯
-                    print(f"[TARGET ]: Pos: (X:{tp['x']:>6.2f}, Y:{tp['y']:>6.2f})")
-                print(f"[GOAL   ]: Distance to Exit: {t['distanceToTarget']:.2f}m")
+                
+                keys = t.get("keysPositions", [])
+                doors = t.get("doorsPositions", [])
+                
+                if keys:
+                    key_list = ", ".join([f"(X:{k['x']:.1f}, Y:{k['y']:.1f})" for k in keys])
+                    print(f"[KEYS   ]: Found {len(keys)} @ {key_list}")
+                
+                if doors:
+                    door_list = ", ".join([f"(X:{d['x']:.1f}, Y:{d['y']:.1f})" for d in doors])
+                    print(f"[DOORS  ]: Found {len(doors)} @ {door_list}")
 
+            # --- NAVIGATION ---
             n_resp = self.game_data.get('nearby')
             if n_resp and n_resp.get("success"):
                 wps = n_resp["data"]["waypoints"]
@@ -88,7 +99,8 @@ class OpenClawTerminal:
                 print(f"[WAYPTS ]: Nearest IDs: {wp_str}")
 
         print("-" * 60)
-        print(" CONTROLS: WASD (Move) | SPACE (Stop) | Q (Quit)")
+        print(" MOVEMENT: WASD (Move) | SPACE (Stop)")
+        print(" COMMANDS: R (Restart) | M (Main Menu) | L (Load 1-1) | Q (Quit)")
         print("=" * 60)
 
     def run(self):
@@ -100,11 +112,18 @@ class OpenClawTerminal:
                 self.draw_ui()
                 if msvcrt.kbhit():
                     key = msvcrt.getch().decode('utf-8').lower()
+                    # Locomotion
                     if key == 'w': self.invoke("/api/player/move", "POST", {"x": 0, "y": 1})
                     elif key == 's': self.invoke("/api/player/move", "POST", {"x": 0, "y": -1})
                     elif key == 'a': self.invoke("/api/player/move", "POST", {"x": -1, "y": 0})
                     elif key == 'd': self.invoke("/api/player/move", "POST", {"x": 1, "y": 0})
                     elif key == ' ': self.invoke("/api/player/move", "POST", {"x": 0, "y": 0})
+                    
+                    # Management Endpoints
+                    elif key == 'r': self.invoke("/api/player/restart", "POST")
+                    elif key == 'm': self.invoke("/api/player/main", "POST")
+                    elif key == 'l': self.invoke("/api/player/level", "POST", {"chapter": 1, "level": 1})
+                    
                     elif key == 'q': break
                 time.sleep(0.1)
         finally:

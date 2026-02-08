@@ -27,7 +27,10 @@
     "playerExists": false,
     "worldAxisUp": "string_value",
     "worldAxisForward": "string_value",
-    "worldAxisRight": "string_value"
+    "worldAxisRight": "string_value",
+    "chapter1Progress": 0,
+    "chapter2Progress": 0,
+    "currentLevel": "string_value"
   },
   "GameTaskResponse": {
     "taskDescription": "string_value",
@@ -37,7 +40,22 @@
       "z": 0.0
     },
     "distanceToTarget": 0.0,
-    "isCompleted": false
+    "isCompleted": false,
+    "keysPositions": [
+      {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      }
+    ],
+    "doorsPositions": [
+      {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      }
+    ],
+    "currentLevel": "string_value"
   },
   "CommandResponse": {
     "executed": false,
