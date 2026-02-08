@@ -30,11 +30,10 @@ class OpenClawTerminal:
 
     def update_loop(self):
         while self.is_running:
-            # Syncing with new endpoints and data structures
-            status = self.invoke("/api/status")           # Returns scene and progress
-            pos = self.invoke("/api/player/position")     # Returns player transform
-            task = self.invoke("/api/game/task")          # Returns keys, doors, and objectives
-            nearby = self.invoke("/api/waypoints/nearby") # Returns local navigation nodes
+            status = self.invoke("/api/status")           
+            pos = self.invoke("/api/player/position")     
+            task = self.invoke("/api/game/task")          
+            nearby = self.invoke("/api/waypoints/nearby") 
 
             with self.lock:
                 self.game_data['status'] = status
@@ -47,11 +46,14 @@ class OpenClawTerminal:
         os.system('cls' if platform.system() == 'Windows' else 'clear')
         
         with self.lock:
-            # --- MISSION STATUS ---
             task_resp = self.game_data.get('task')
             is_done = False
+            key_count = 0
+            
             if task_resp and task_resp.get("success"):
-                is_done = task_resp["data"].get("isCompleted", False)
+                t_data = task_resp["data"]
+                is_done = t_data.get("is_completed", False)
+                key_count = t_data.get("key_count", 0) # 获取钥匙数量 
 
             if is_done:
                 print("*" * 60)
@@ -59,47 +61,38 @@ class OpenClawTerminal:
                 print("*" * 60)
             else:
                 print("=" * 60)
-                print(f"  OPENCLAW MISSION MONITOR - {time.strftime('%H:%M:%S')}")
+                print(f"  OPENCLAW MONITOR - {time.strftime('%H:%M:%S')} | KEYS: {key_count}") # UI 显示钥匙
                 print("=" * 60)
 
-            # --- SYSTEM & PROGRESS ---
             s_resp = self.game_data.get('status')
             if s_resp and s_resp.get("success"):
                 s = s_resp["data"]
                 print(f"[LEVEL  ]: {s['currentLevel']} (Scene: {s['sceneName']})")
                 print(f"[PROGRESS]: Ch1: {s['chapter1Progress']} | Ch2: {s['chapter2Progress']}")
 
-            # --- PLAYER ---
             p_resp = self.game_data.get('pos')
             if p_resp and p_resp.get("success"):
                 p = p_resp["data"]["position"]
                 print(f"[PLAYER ]: X: {p['x']:>6.2f} | Y: {p['y']:>6.2f}")
 
-            # --- DYNAMIC OBJECTS ---
             if task_resp and task_resp.get("success"):
                 t = task_resp["data"]
-                print(f"[MISSION]: {t['taskDescription']}")
+                print(f"[MISSION]: {t['task_description']}") # 使用谷歌式命名 
                 
-                keys = t.get("keysPositions", [])
-                doors = t.get("doorsPositions", [])
+                # 只显示处于激活状态的物件
+                keys = t.get("keys_positions", [])
+                doors = t.get("doors_positions", [])
                 
                 if keys:
                     key_list = ", ".join([f"(X:{k['x']:.1f}, Y:{k['y']:.1f})" for k in keys])
-                    print(f"[KEYS   ]: Found {len(keys)} @ {key_list}")
+                    print(f"[ACTIVE KEYS ]: {len(keys)} @ {key_list}")
                 
                 if doors:
                     door_list = ", ".join([f"(X:{d['x']:.1f}, Y:{d['y']:.1f})" for d in doors])
-                    print(f"[DOORS  ]: Found {len(doors)} @ {door_list}")
-
-            # --- NAVIGATION ---
-            n_resp = self.game_data.get('nearby')
-            if n_resp and n_resp.get("success"):
-                wps = n_resp["data"]["waypoints"]
-                wp_str = " | ".join([f"#{w['id']}" for w in wps[:3]])
-                print(f"[WAYPTS ]: Nearest IDs: {wp_str}")
+                    print(f"[ACTIVE DOORS]: {len(doors)} @ {door_list}")
 
         print("-" * 60)
-        print(" MOVEMENT: WASD (Move) | SPACE (Stop)")
+        print(" MOVEMENT: WASD | STOP: SPACE | INTERACT: E") # 提示交互键
         print(" COMMANDS: R (Restart) | M (Main Menu) | L (Load 1-1) | Q (Quit)")
         print("=" * 60)
 
@@ -112,14 +105,17 @@ class OpenClawTerminal:
                 self.draw_ui()
                 if msvcrt.kbhit():
                     key = msvcrt.getch().decode('utf-8').lower()
-                    # Locomotion
+                    # 基础移动
                     if key == 'w': self.invoke("/api/player/move", "POST", {"x": 0, "y": 1})
                     elif key == 's': self.invoke("/api/player/move", "POST", {"x": 0, "y": -1})
                     elif key == 'a': self.invoke("/api/player/move", "POST", {"x": -1, "y": 0})
                     elif key == 'd': self.invoke("/api/player/move", "POST", {"x": 1, "y": 0})
                     elif key == ' ': self.invoke("/api/player/move", "POST", {"x": 0, "y": 0})
                     
-                    # Management Endpoints
+                    # 交互指令
+                    elif key == 'e': self.invoke("/api/player/interact", "POST") 
+                    
+                    # 管理指令
                     elif key == 'r': self.invoke("/api/player/restart", "POST")
                     elif key == 'm': self.invoke("/api/player/main", "POST")
                     elif key == 'l': self.invoke("/api/player/level", "POST", {"chapter": 1, "level": 1})

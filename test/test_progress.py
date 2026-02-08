@@ -31,15 +31,16 @@ class OpenClawManualTester:
             print("   OPENCLAW API MANUAL TESTER")
             print("="*40)
             print(" 1. Get Game Status (Progress/Scene)")
-            print(" 2. Get Task Info (Keys/Doors)")
+            print(" 2. Get Task Info (Keys/Doors/Inventory)")
             print(" 3. Restart Current Level")
             print(" 4. Load Specific Level")
             print(" 5. Back to Main Menu")
             print(" 6. Move Player (0.5, 0.5)")
+            print(" 7. Interact (Pick up/Open door)") # 新增交互功能
             print(" 0. Exit")
             print("-" * 40)
             
-            choice = input("Enter choice (0-6): ")
+            choice = input("Enter choice (0-7): ")
 
             if choice == '1':
                 res = self.invoke("/api/status")
@@ -47,6 +48,7 @@ class OpenClawManualTester:
             
             elif choice == '2':
                 res = self.invoke("/api/game/task")
+                # 打印任务信息时会包含 key_count
                 print(json.dumps(res, indent=4))
             
             elif choice == '3':
@@ -68,6 +70,10 @@ class OpenClawManualTester:
 
             elif choice == '6':
                 res = self.invoke("/api/player/move", "POST", {"x": 0.5, "y": 0.5})
+                print(json.dumps(res, indent=4))
+
+            elif choice == '7':
+                res = self.invoke("/api/player/interact", "POST") # 调用交互端点
                 print(json.dumps(res, indent=4))
 
             elif choice == '0':

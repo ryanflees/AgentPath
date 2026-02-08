@@ -55,6 +55,7 @@
         "z": 0.0
       }
     ],
+    "keysObtained": 0,
     "currentLevel": "string_value"
   },
   "CommandResponse": {
